@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name = "viewport" content = "width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable = 0" />
+	<title></title>
+</head>
+<style>
+*{
+    padding: 0;
+    margin: 0;
+}
+</style>
+<body>
+	<canvas id='canvas'></canvas>
+	<script type="text/javascript">
+        var canvas = document.getElementById('canvas');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+		var c = canvas.getContext('2d');
+		c.fillStyle = 'gray';
+		c.fillRect(0,0,canvas.width,canvas.height)
+		var target=[{}];
+		for (var i = 0; i <= 30; i++) {
+			var obj = {}
+			obj.x = randomNum(30,770);
+			obj.y= randomNum(30,470);
+			obj.speedX = randomNum(-2,1);
+			obj.speedY=randomNum(-2,1);
+			obj.deg = randomNum(0,180)
+			target[i]=obj;
+			drawStar(c,target[i].x,target[i].y,10,5,target[i].deg);
+		};
+ 
+		function move() {
+			//更新画布
+            // c.clearRect(0,0,800,500);
+			c.fillStyle = 'rgba(0,0,0,0.08)';
+			c.fillRect(0,0,canvas.width,canvas.height)
+			//绘制星星
+			for (var i = 0; i <= 30; i++) {
+				
+				target[i].x +=target[i].speedX;
+				target[i].y +=target[i].speedY;
+ 
+				//保证星星速度不为零
+				if(target[i].speedX==0){
+					target[i].speedX=1
+				}
+				if(target[i].speedY==0){
+					target[i].speedY=1
+				}
+				//星星运动到边界后往回运动
+				if(target[i].x>=canvas.width-20 || target[i].x < 30){
+					target[i].speedX = -target[i].speedX;
+				}
+				// if(target[i].x<=30){
+				// 	target[i].speedX = randomNum(1,2);
+				// }
+				if(target[i].y>=canvas.height-20 || target[i].y < 30){
+					target[i].speedY = -target[i].speedY;
+				}
+				// if(target[i].y<=30){
+				// 	target[i].speedY = randomNum(1,2);
+				// }
+				drawStar(c,target[i].x,target[i].y,20,10,target[i].deg);
+            }
+            requestAnimationFrame(move)
+ 
+        };
+        move()
+		//取随机数
+		function randomNum(min,max){
+			return Math.floor(Math.random()*(max-min+1)+min);
+		}
+		//画星星
+		//x, y为圆心坐标，R、r分别为大圆、小圆半径,rot旋转角度 
+		function drawStar(cxt, x, y, r, R, rot){
+                cxt.beginPath();
+                for(var i = 0; i < 5; i ++){
+                    cxt.lineTo( Math.cos( (18 + i*72 - rot)/180 * Math.PI) * R + x,
+                                -Math.sin( (18 + i*72 - rot)/180 * Math.PI) * R + y)
+                    cxt.lineTo( Math.cos( (54 + i*72 - rot)/180 * Math.PI) * r + x,
+                                -Math.sin( (54 + i*72 - rot)/180 * Math.PI) * r + y)
+                }
+                cxt.closePath();
+                cxt.lineWidth = 3;
+                cxt.fillStyle = "#FF82AB";
+                cxt.strokeStyle = "#FFC1C1";
+                cxt.lineJoin = "round";
+                cxt.fill();
+                cxt.stroke();
+                // cxt.fillText('123455');
+                var gradient=cxt.createLinearGradient(150,800,400,800);
+                gradient.addColorStop("0","#FFC1C1");
+                gradient.addColorStop("0.5","#FF82AB");
+                gradient.addColorStop("1.0","#FFF8DC");
+                // Fill with gradient
+                cxt.fillStyle=gradient;
+                cxt.font="50px Wawati FZShuTi";
+                cxt.fillText("Pluck the stars for you.",200,800);
+        }
+	</script>
+</body>	
+</html>
